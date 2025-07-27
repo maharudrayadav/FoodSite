@@ -41,13 +41,27 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="featured-restaurants">
+       <section className="featured-restaurants">
         <h2>Featured Restaurants</h2>
         <div className="restaurants-grid">
           {restaurants.map(restaurant => (
             <div key={restaurant.id} className="restaurant-card">
               <div className="restaurant-image">
                 <img src={restaurant.imageId} alt={restaurant.name} />
+              </div>
+              <div className="restaurant-info">
+                <h3>{restaurant.name}</h3>
+                <p>{restaurant.description}</p>
+                <div className="restaurant-meta">
+                  <span>📍 {restaurant.physicalAddress}</span>
+                  <span>📞 {restaurant.phone}</span>
+                </div>
+                <Link 
+                  to={`/restaurant/${restaurant.id}`} 
+                  className="btn view-btn"
+                >
+                  View Menu
+                </Link>
               </div>
             </div>
           ))}
