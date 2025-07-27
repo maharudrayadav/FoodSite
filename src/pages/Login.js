@@ -29,7 +29,7 @@ const Login = () => {
     try {
       // Admin login (local check only)
       if (formData.role === 'admin') {
-        if (formData.email === 'admin' && formData.password === 'admin123') {
+        if (formData.email === 'admin@12' && formData.password === 'admin123') {
           login('admin-token', 'admin', 'admin-id', 'Admin');
           navigate('/admin/categories');
           return;
