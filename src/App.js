@@ -109,9 +109,10 @@ function App() {
   }, []);
   if (splashLoading) {
   return (
-    <div className="splash-screen">
-      <div className="spinner"></div>
-      <h2>Welcome to FoodExpress</h2>
+    <div className="splash-container">
+      <div className="glow-spinner"></div>
+      <h1 className="splash-title">Welcome to <span>FoodExpress</span></h1>
+      <p className="splash-subtitle">Deliciousness loading...</p>
     </div>
   );
 }
