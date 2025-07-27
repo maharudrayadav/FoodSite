@@ -4,8 +4,15 @@ import AuthContext from '../context/AuthContext';
 import './Home.css';
 
 const Home = () => {
-  const { categories, restaurants } = useContext(AuthContext);
-
+  const { categories, restaurants, loading } = useContext(AuthContext);
+  if (loading) {
+  return (
+    <div className="loading-screen">
+      <div className="spinner"></div>
+      <p>Loading the freshest data...</p>
+    </div>
+  );
+}
   return (
     <div className="home-page">
       <section className="hero-section">
