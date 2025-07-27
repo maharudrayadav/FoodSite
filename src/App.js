@@ -17,8 +17,8 @@ import AdminCategories from './pages/AdminCategories';
 
 // Set base URL for API
 axios.defaults.baseURL = 'https://foodwebsite-jtu2.onrender.com';
-
 function App() {
+  const [splashLoading, setSplashLoading] = useState(true); 
   const [auth, setAuth] = useState({
     token: localStorage.getItem('token'),
     role: localStorage.getItem('role'),
@@ -50,6 +50,10 @@ function App() {
     };
 
     initializeAuth();
+  }, []);
+  useEffect(() => {
+    const timer = setTimeout(() => setSplashLoading(false), 3000); // 👈 Step 2: 3 sec delay
+    return () => clearTimeout(timer);
   }, []);
 
   // Fetch categories and restaurants on app load
@@ -103,7 +107,14 @@ function App() {
       axios.interceptors.request.eject(requestInterceptor);
     };
   }, []);
-
+  if (splashLoading) {
+  return (
+    <div className="splash-screen">
+      <div className="spinner"></div>
+      <h2>Welcome to FoodExpress</h2>
+    </div>
+  );
+}
   // Don't render routes until auth is initialized
   if (!auth.initialized) {
     return (
