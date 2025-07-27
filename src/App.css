@@ -101,3 +101,58 @@ body {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+/* Splash screen container */
+.splash-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #ff6a00, #ee0979);
+  color: white;
+  text-align: center;
+  animation: fadeIn 1s ease-in-out;
+}
+
+/* Glow spinner */
+.glow-spinner {
+  width: 80px;
+  height: 80px;
+  border: 6px solid rgba(255, 255, 255, 0.2);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite, glow 1.5s ease-in-out infinite;
+  margin-bottom: 30px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 10px white; }
+  50% { box-shadow: 0 0 20px #fff, 0 0 40px #ff4d4d; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Title and subtitle */
+.splash-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.splash-title span {
+  color: #ffd700;
+  text-shadow: 0 0 10px #fff;
+}
+
+.splash-subtitle {
+  font-size: 1.2rem;
+  opacity: 0.8;
+}
+
