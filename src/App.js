@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -12,7 +12,6 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AuthContext from './context/AuthContext';
 import './App.css';
-import AdminCategories from './pages/AdminCategories';
 
 // Set base URL for API
 axios.defaults.baseURL = 'https://foodwebsite-jtu2.onrender.com';
@@ -115,7 +114,7 @@ function App() {
     localStorage.setItem('userId', userId);
     localStorage.setItem('name', name);
     setAuth({ token, role, userId, name, initialized: true });
-    refreshData(); // Refresh data on login
+    refreshData();
   };
 
   const logout = () => {
@@ -124,7 +123,7 @@ function App() {
     localStorage.removeItem('userId');
     localStorage.removeItem('name');
     setAuth({ token: null, role: null, userId: null, name: null, initialized: true });
-    refreshData(); // Refresh data on logout
+    refreshData();
   };
 
   // Refresh function for child components
@@ -165,6 +164,7 @@ function App() {
     };
   }, []);
 
+  // Initial loading spinner for auth initialization
   if (!auth.initialized) {
     return (
       <div className="loading-screen">
@@ -187,6 +187,7 @@ function App() {
         <div className="app">
           <Navbar />
           <div className="content">
+            {/* Data loading spinner */}
             {loading ? (
               <div className="loading-screen">
                 <div className="spinner"></div>
