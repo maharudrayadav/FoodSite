@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Home from './pages/Home';
@@ -14,22 +14,22 @@ import AuthContext from './context/AuthContext';
 import './App.css';
 import AdminCategories from './pages/AdminCategories';
 
-
 // Set base URL for API
 axios.defaults.baseURL = 'https://foodwebsite-jtu2.onrender.com';
+
 function App() {
-  const [splashLoading, setSplashLoading] = useState(true); 
   const [auth, setAuth] = useState({
     token: localStorage.getItem('token'),
     role: localStorage.getItem('role'),
     userId: localStorage.getItem('userId'),
     name: localStorage.getItem('name'),
-    initialized: false // Add initialization state
+    initialized: false
   });
 
   const [categories, setCategories] = useState([]);
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [lastRefresh, setLastRefresh] = useState(Date.now());
 
   // Initialize auth state
   useEffect(() => {
@@ -37,7 +37,6 @@ function App() {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          // Verify token with backend
           const response = await axios.get('/api/auth/verify', {
             headers: { Authorization: `Bearer ${token}` }
           });
@@ -50,24 +49,57 @@ function App() {
     };
 
     initializeAuth();
-  }, []);
-  useEffect(() => {
-    const timer = setTimeout(() => setSplashLoading(false), 3000); // 👈 Step 2: 3 sec delay
-    return () => clearTimeout(timer);
+    
+    // Listen for storage events to sync tabs
+    const handleStorageChange = (event) => {
+      if (event.key === 'token' || event.key === 'role') {
+        window.location.reload();
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
-  // Fetch categories and restaurants on app load
+  // Memoized data fetching functions
+  const fetchCategories = useCallback(async () => {
+    try {
+      const categoriesRes = await axios.get('/api/categories', {
+        params: { timestamp: lastRefresh },
+        headers: { 'Cache-Control': 'no-cache' }
+      });
+      setCategories(categoriesRes.data);
+      return true;
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      return false;
+    }
+  }, [lastRefresh]);
+
+  const fetchRestaurants = useCallback(async () => {
+    try {
+      const restaurantsRes = await axios.get('/api/restaurants/all', {
+        params: { timestamp: lastRefresh },
+        headers: { 'Cache-Control': 'no-cache' }
+      });
+      setRestaurants(restaurantsRes.data);
+      return true;
+    } catch (error) {
+      console.error('Error fetching restaurants:', error);
+      return false;
+    }
+  }, [lastRefresh]);
+
+  // Fetch data on initial load and refresh
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
-        // Fetch categories
-        const categoriesRes = await axios.get('/api/categories');
-        setCategories(categoriesRes.data);
-        
-        // Fetch restaurants
-        const restaurantsRes = await axios.get('/api/restaurants/all');
-        setRestaurants(restaurantsRes.data);
+        await Promise.all([fetchCategories(), fetchRestaurants()]);
       } catch (error) {
+        if (error.response?.status === 401) {
+          logout();
+        }
         console.error('Error fetching data:', error);
       } finally {
         setLoading(false);
@@ -75,7 +107,7 @@ function App() {
     };
 
     fetchData();
-  }, []);
+  }, [fetchCategories, fetchRestaurants]);
 
   const login = (token, role, userId, name) => {
     localStorage.setItem('token', token);
@@ -83,6 +115,7 @@ function App() {
     localStorage.setItem('userId', userId);
     localStorage.setItem('name', name);
     setAuth({ token, role, userId, name, initialized: true });
+    refreshData(); // Refresh data on login
   };
 
   const logout = () => {
@@ -91,32 +124,47 @@ function App() {
     localStorage.removeItem('userId');
     localStorage.removeItem('name');
     setAuth({ token: null, role: null, userId: null, name: null, initialized: true });
+    refreshData(); // Refresh data on logout
   };
 
-  // Set up axios interceptors for authentication
+  // Refresh function for child components
+  const refreshData = () => {
+    setLastRefresh(Date.now());
+  };
+
+  // Set up axios interceptors
   useEffect(() => {
     const requestInterceptor = axios.interceptors.request.use(config => {
       const token = localStorage.getItem('token');
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
+      // Add cache-busting parameter to GET requests
+      if (config.method === 'get') {
+        config.params = {
+          ...config.params,
+          timestamp: Date.now()
+        };
+      }
       return config;
     }, error => Promise.reject(error));
 
+    const responseInterceptor = axios.interceptors.response.use(
+      response => response,
+      error => {
+        if (error.response?.status === 401) {
+          logout();
+        }
+        return Promise.reject(error);
+      }
+    );
+
     return () => {
       axios.interceptors.request.eject(requestInterceptor);
+      axios.interceptors.response.eject(responseInterceptor);
     };
   }, []);
-  if (splashLoading) {
-  return (
-    <div className="splash-container">
-      <div className="glow-spinner"></div>
-      <h1 className="splash-title">Welcome to <span>FoodExpress</span></h1>
-      <p className="splash-subtitle">Deliciousness loading...</p>
-    </div>
-  );
-}
-  // Don't render routes until auth is initialized
+
   if (!auth.initialized) {
     return (
       <div className="loading-screen">
@@ -133,8 +181,7 @@ function App() {
       logout,
       categories,
       restaurants,
-      setCategories,
-      setRestaurants
+      refreshData
     }}>
       <Router>
         <div className="app">
