@@ -16,7 +16,7 @@ import AdminCategories from './pages/AdminCategories';
 
 
 // Set base URL for API
-axios.defaults.baseURL = 'https://foodwebsite-jtu2.onrender.com';
+axios.defaults.baseURL = 'https://foodwebsite-4tj7.onrender.com';
 
 function App() {
   const [auth, setAuth] = useState({
