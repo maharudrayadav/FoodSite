@@ -64,7 +64,7 @@ const AdminCategories = () => {
   const handleDelete = async (categoryId) => {
     if (window.confirm('Are you sure you want to delete this category?')) {
       try {
-        await axios.delete(`https://foodwebsite-jtu2.onrender.com/api/categories/${categoryId}`, {
+        await axios.delete(`https://foodwebsite-4tj7.onrender.com/api/categories/${categoryId}`, {
           headers: { 
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
