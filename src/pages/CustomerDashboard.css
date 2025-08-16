@@ -1,0 +1,225 @@
+/* src/pages/CustomerDashboard.css */
+.customer-dashboard {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 70vh;
+}
+
+.orders-list {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+}
+
+.order-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  transition: transform 0.3s ease;
+  border-left: 4px solid #4caf50;
+}
+
+.order-card:hover {
+  transform: translateY(-5px);
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.order-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #333;
+}
+
+.status-badge {
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.status-badge.placed {
+  background-color: #ffecb3;
+  color: #f57c00;
+}
+
+.status-badge.preparing {
+  background-color: #bbdefb;
+  color: #1976d2;
+}
+
+.status-badge.ontheway {
+  background-color: #e1bee7;
+  color: #7b1fa2;
+}
+
+.status-badge.delivered {
+  background-color: #c8e6c9;
+  color: #388e3c;
+}
+
+.status-badge.cancelled {
+  background-color: #ffcdd2;
+  color: #d32f2f;
+}
+
+.order-details p {
+  margin: 0.75rem 0;
+  line-height: 1.5;
+  color: #555;
+}
+
+.order-details strong {
+  color: #333;
+  min-width: 160px;
+  display: inline-block;
+}
+
+.cancel-btn {
+  margin-top: 1.2rem;
+  padding: 0.7rem 1.2rem;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+  width: 100%;
+}
+
+.cancel-btn:hover {
+  background-color: #d32f2f;
+}
+
+.no-orders {
+  text-align: center;
+  padding: 3rem;
+  background: #f9f9f9;
+  border-radius: 10px;
+  max-width: 500px;
+  margin: 2rem auto;
+}
+
+.no-orders p {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  color: #666;
+}
+
+.error-message {
+  text-align: center;
+  padding: 2rem;
+  background: #ffebee;
+  border-radius: 10px;
+  max-width: 600px;
+  margin: 2rem auto;
+  color: #d32f2f;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.btn {
+  padding: 0.8rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  border: none;
+  transition: all 0.3s;
+  font-size: 1rem;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.primary-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.primary-btn:hover {
+  background-color: #43a047;
+}
+
+.secondary-btn {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.secondary-btn:hover {
+  background-color: #d0d0d0;
+}
+
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  text-align: center;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border-left-color: #4caf50;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+/* Add these styles to CustomerDashboard.css */
+.customer-id-form {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.customer-id-form .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.customer-id-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.customer-id-form input {
+  width: 100%;
+  padding: 0.9rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}

@@ -1,23 +1,18 @@
 // src/pages/CategoryPage.js
-import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { useCart } from '../context/CartContext'; // UPDATED IMPORT
+import React, { useState, useEffect, useContext } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 import './CategoryPage.css';
-import { useContext } from 'react';
 
 const CategoryPage = () => {
   const { categoryId } = useParams();
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [category, setCategory] = useState(null);
-  const { addToCart } = useCart(); // UPDATED HOOK
-  const { categories } = useContext(AuthContext);
+  const context = useContext(AuthContext);
+  const token = context?.token;
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const foundCategory = categories.find(cat => cat.categoryId === parseInt(categoryId));
-    setCategory(foundCategory);
-    
     const fetchMenuItems = async () => {
       try {
         const response = await fetch(
@@ -33,7 +28,17 @@ const CategoryPage = () => {
     };
 
     fetchMenuItems();
-  }, [categoryId, categories]);
+  }, [categoryId]);
+
+  const handleBuyClick = (item) => {
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+    
+    // Navigate to checkout page with item data
+    navigate('/checkout', { state: { item } });
+  };
 
   if (loading) {
     return (
@@ -46,7 +51,7 @@ const CategoryPage = () => {
 
   return (
     <div className="category-page">
-      <h2>{category ? category.name : 'Category'} Menu</h2>
+      <h2>Menu</h2>
       <div className="menu-items-grid">
         {menuItems.map(item => (
           <div key={item.itemId} className="menu-item-card">
@@ -61,10 +66,10 @@ const CategoryPage = () => {
               <p className="price">${item.price.toFixed(2)}</p>
               <div className="item-actions">
                 <button 
-                  onClick={() => addToCart(item)}
+                  onClick={() => handleBuyClick(item)}
                   className="btn primary-btn"
                 >
-                  Add to Cart
+                  Buy Now
                 </button>
                 <Link 
                   to={`/restaurant/${item.restaurantId}`} 

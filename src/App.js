@@ -6,7 +6,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import RestaurantSignup from './pages/RestaurantSignup';
 import RestaurantDashboard from './pages/RestaurantDashboard';
-import CustomerDashboard from './pages/CustomerDashboard'; // ✅ Correct
+import CustomerDashboard from './pages/CustomerDashboard';
 import AdminCategoryManagement from './pages/AdminCategoryManagement';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -16,6 +16,7 @@ import './App.css';
 import CategoryPage from './pages/CategoryPage';
 import CartPage from './pages/CartPage';
 import RestaurantPage from './pages/RestaurantPage'; 
+import CheckoutPage from './pages/CheckoutPage';
 
 // Set base URL for API
 axios.defaults.baseURL = 'https://foodwebsite-4tj7.onrender.com';
@@ -137,8 +138,18 @@ function App() {
                   <Route path="/restaurant/signup" element={<RestaurantSignup />} />
                   <Route path="/category/:categoryId" element={<CategoryPage />} />
                   <Route path="/cart" element={<CartPage />} />
-                  {/* ADDED RESTAURANT PAGE ROUTE */}
                   <Route path="/restaurant/:restaurantId" element={<RestaurantPage />} />
+                  
+                  {/* Add Checkout Page Route */}
+                  <Route 
+                    path="/checkout" 
+                    element={
+                      auth.token && auth.role === 'customer' ? 
+                      <CheckoutPage /> : 
+                      <Navigate to="/login" state={{ from: '/checkout' }} replace />
+                    } 
+                  />
+                  
                   <Route 
                     path="/customer/dashboard" 
                     element={
